@@ -41,10 +41,17 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
          }
 
          /* width < 720px */
+         @media screen and (max-width: 720px) {
+            .prose {
+               width: 100%;
+            }
+            
+         }
          @media (max-width: 720px) {
             .prose {
                max-width: 100%;
-            }
+               padding: 0;
+            }  
          }
 
          .title {
