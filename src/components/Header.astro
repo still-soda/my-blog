@@ -1,0 +1,110 @@
+---
+interface Props {
+   fixed?: boolean;
+   boxShadow?: boolean;
+}
+
+const { fixed = true, boxShadow = true } = Astro.props;
+---
+
+<nav
+   class='text-sm md:text-base w-[90vw] rounded-lg md:rounded-2xl md:w-[80vw]'
+   style={{
+      position: fixed ? 'fixed' : 'relative',
+      animation: fixed ? 'fadeIn 1s ease forwards' : 'none',
+      boxShadow: boxShadow ? undefined : 'none',
+   }}>
+   <a href='/' class='name active'>still_soda</a>
+   <div class='items'>
+      <a href='/' class='hidden md:block text-white'>.is()</a>
+      <a href='/about' class='block text-white'>.about()</a>
+      <a href='/blog' class='block text-white'>.blog()</a>
+      <!-- <a href='/contact' class='hidden md:block text-white'>.contact()</a> -->
+   </div>
+</nav>
+<style>
+   * {
+      font-family: 'JetBrains Mono';
+   }
+
+   nav {
+      user-select: none;
+      position: fixed;
+      top: 1em;
+      max-width: 1224px;
+      padding: 0.7em 2em;
+      background: rgb(24, 24, 24, 0.5);
+      display: flex;
+      align-items: center;
+      z-index: 9999;
+
+      animation: fadeIn 1s ease forwards;
+
+      backdrop-filter: blur(10px);
+      box-shadow:
+         0 0 10px rgba(0, 0, 0, 0.5),
+         inset 0 2px 7px rgba(255, 255, 255, 0.2),
+         inset 0 -2px 7px rgba(0, 0, 0, 0.3),
+         inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+
+      & .name {
+         font-size: 1em;
+         color: #ff7b00;
+         margin: 0.5em;
+      }
+
+      & .items {
+         display: flex;
+         gap: 2em;
+         margin-left: auto;
+         height: 100%;
+         align-items: center;
+         justify-content: center;
+         color: white;
+      }
+
+      .items a,
+      .name {
+         position: relative;
+         transition: 0.2s ease-in-out;
+
+         &:hover {
+            cursor: pointer;
+            color: #ff7b00;
+            &::before {
+               background: #ff7b00;
+            }
+         }
+
+         &.active {
+            &::before {
+               background: #ff7b00;
+               width: 60%;
+            }
+         }
+
+         &::before {
+            content: '';
+            position: absolute;
+            bottom: -0.5em;
+            left: 0;
+            width: 0.4em;
+            height: 0.4em;
+            border-radius: 0.2em;
+            background: transparent;
+            transition: 0.2s ease-in-out;
+         }
+      }
+   }
+
+   @keyframes fadeIn {
+      from {
+         transform: translateY(-3em);
+         opacity: 0;
+      }
+      to {
+         transform: translateY(0);
+         opacity: 1;
+      }
+   }
+</style>

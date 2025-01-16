@@ -1,0 +1,30 @@
+* {
+   padding: 0;
+   margin: 0;
+}
+
+.container[data-id='magic-name'] {
+   width: 100vw;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   color: #ff7b00;
+}
+
+.container[data-id='magic-name'] svg {
+   filter: drop-shadow(0 0 10px #ff7b00);
+   animation: flashing 3s infinite;
+   margin-inline: 2rem;
+}
+
+@keyframes flashing {
+   0% {
+      filter: drop-shadow(0 0 8px #ff7b00);
+   }
+   50% {
+      filter: drop-shadow(0 0 5px #ff7b00);
+   }
+   100% {
+      filter: drop-shadow(0 0 8px #ff7b00);
+   }
+}

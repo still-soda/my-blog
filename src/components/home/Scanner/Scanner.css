@@ -1,0 +1,44 @@
+* {
+   margin: 0;
+   padding: 0;
+}
+
+.container[data-id='scanner'] {
+   margin: 0;
+   width: 100vw;
+   height: 100vh;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   position: absolute;
+
+   & .front-screen {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ff7b00;
+      color: white;
+      position: absolute;
+      clip-path: circle(0px at 50% 50%);
+      filter: drop-shadow(0 0 10px #ff7b00);
+
+      user-select: none;
+      pointer-events: none;
+
+      & div {
+         opacity: 0;
+         transition: 0.3s ease-in-out;
+      }
+   }
+
+   & .active div {
+      opacity: 1;
+   }
+
+   & .back-screen {
+      position: absolute;
+      user-select: none;
+   }
+}
