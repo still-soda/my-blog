@@ -31,10 +31,10 @@ jobs:
       run: pnpm run build
 
     - name: FTP Deployer
-      uses: sand4rt/ftp-deployer@v1.8
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        host: 120.77.252.33
+        server: 120.77.252.33
         username: my_blog
         password: prBLdFCseENXdDyd
-        cleanup: true
+        local-dir: ./dist/
           
