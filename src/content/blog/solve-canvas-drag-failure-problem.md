@@ -3,7 +3,7 @@ title: '解决 Canvas 双击后拖拽失效问题'
 description:
    '开发仿excalidraw Web应用时，遇双击页面后拖拽失效问题。双击后拖拽功能不可用，鼠标指针变copy样式，mousemove事件监听器不触发。经分析，非焦点转移所致。实际是双击触发浏览器默认行为（如文本选择、窗口最大化）干扰事件传播，dragstart事件在双击后可能误触发致拖拽异常。解决办法：在文档添加dragstart事件监听器，调用event.preventDefault()阻止默认拖拽行为，问题解决 。'
 pubDate: 'Sep 05 2024'
-heroImage: '/hero/hero-solve-canvas-drag-failure-problem.png'
+heroImage: '/src/images/hero/hero-solve-canvas-drag-failure-problem.png'
 ---
 
 ## 问题描述

@@ -3,7 +3,7 @@ title: '用流式传输协议接入百度大模型的心得以及一些相关 bu
 description:
    '用流式传输协议接入百度大模型的心得以及一些相关 bug 的解决方案'
 pubDate: 'Aug 19 2024'
-heroImage: '/hero/hero-exp-in-using-streaming-protocol-to-access-baidu-s-big-model-&-bug-solutions.png'
+heroImage: '/src/images/hero/hero-exp-in-using-streaming-protocol-to-access-baidu-s-big-model-&-bug-solutions.png'
 ---
 
 ## 前言

@@ -2,7 +2,7 @@
 title: '把 VSCode 中的颜色指示器改成圆角的一种办法'
 description: '本文讲述了如何对 VSCode 中丑到爆的矩形颜色指示器进行样式修改。'
 pubDate: 'Jul 27 2024'
-heroImage: '/hero/hero-a-way-to-change-the-color-indicator-to-rounded-corners.png'
+heroImage: '/src/images/hero/hero-a-way-to-change-the-color-indicator-to-rounded-corners.png'
 ---
 
 ## 起因

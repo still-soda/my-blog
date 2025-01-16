@@ -2,7 +2,7 @@
 title: '《Vue.js设计与实现》学习笔记 | 权衡的艺术'
 description: '本文是《Vue.js设计与实现》第一章的学习笔记，主要讲了声明式和命令式各自的特点和局限，框架开发者应当如何尽可能降低声明式带来的性能损耗，并降低开发者的心智负担，提高编写程序的可维护性；随后讨论了虚拟DOM的性能，以及其与传统操作模式的区别的优势；最后讨论了编译时和运行时这两种框架类型。'
 pubDate: 'Jul 12 2024'
-heroImage: '/hero/hero-vue-the-art-of-weighing.png'
+heroImage: '/src/images/hero/hero-vue-the-art-of-weighing.png'
 ---
 
 ## 声明式与命令式

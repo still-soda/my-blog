@@ -2,7 +2,7 @@
 title: 'Godot 行为树插件 Beehave 文档学习记录'
 description: ' Godot 行为树插件 Beehave 文档学习记录'
 pubDate: 'Aug 08 2024'
-heroImage: '/hero/hero-godot-behavior-tree-plug-in-beehave-documentation-learning-history.png'
+heroImage: '/src/images/hero/hero-godot-behavior-tree-plug-in-beehave-documentation-learning-history.png'
 --- 
 
 ### 复合节点

@@ -3,7 +3,7 @@ title: '解决部分浏览器中出现的文字自动换行问题'
 description:
    '解决 HTML + TailwindCSS 文本在老旧浏览器上最后一个字自动换行的问题。'
 pubDate: 'Jul 23 2024'
-heroImage: '/hero/hero-solving-text-wrap-problem.png'
+heroImage: '/src/images/hero/hero-solving-text-wrap-problem.png'
 ---
 
 ### 问题

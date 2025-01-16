@@ -5,7 +5,7 @@ description:
    对象描述虚拟 DOM，使代码更加灵活，以及如何使用 `h`
    函数。最后讲解了渲染器的作用。'
 pubDate: 'Jul 14 2024'
-heroImage: '/hero/hero-vue-design-ideas.png'
+heroImage: '/src/images/hero/hero-vue-design-ideas.png'
 ---
 
 ## 声明式地描述UI

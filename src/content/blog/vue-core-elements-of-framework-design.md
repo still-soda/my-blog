@@ -5,7 +5,7 @@ description:
    `rollup.js`
    等打包工具缩减构建体积，删除生产环境下不必要的代码。然后分多钟情况讲解了在不同的需求下需要输出哪些不同的构建产物。最后讲解了如何在框架中加入不错的错误处理。'
 pubDate: 'Jul 13 2024'
-heroImage: '/hero/hero-vue-core-elements-of-framework-design.png'
+heroImage: '/src/images/hero/hero-vue-core-elements-of-framework-design.png'
 ---
 
 ## 框架如何提升用户的开发体验

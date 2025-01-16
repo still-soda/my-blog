@@ -3,7 +3,7 @@ title: 'Jenkins + NodeJS 自动部署'
 description:
    'Jenkins + NodeJS 自动部署'
 pubDate: 'Aug 26 2024'
-heroImage: '/hero/hero-jenkins-node-js-automated-deployment.png'
+heroImage: '/src/images/hero/hero-jenkins-node-js-automated-deployment.png'
 ---
 
 ## CentOS 安装 Jenkins

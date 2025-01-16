@@ -1,0 +1,34 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+   src: string;
+   alt: string;
+}
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+   '/src/images/**/*.{jpg,jpeg,png}'
+);
+const { src, alt } = Astro.props;
+
+if (!images[src]) {
+   throw new Error(`Image not found: ${src}`);
+}
+---
+
+<style>
+   img {
+      position: absolute;
+      min-height: 100%;
+      right: 0;
+   }
+</style>
+
+<Image
+   src={images[src]()}
+   alt={alt}
+   width='400'
+   height='200'
+   quality='90'
+   layout='responsive'
+/>

@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import { SITE_DESCRIPTION } from '../../consts';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
+import MyImage from '../../components/MyImage.astro';
 
 const posts = (await getCollection('blog')).sort(
    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -12,7 +13,7 @@ const posts = (await getCollection('blog')).sort(
 ---
 
 <!doctype html>
-<html lang='en'>
+<html lang='zh' transition:animate='fade'>
    <head>
       <BaseHead title='全部博客' description={SITE_DESCRIPTION} />
       <style>
@@ -73,6 +74,11 @@ const posts = (await getCollection('blog')).sort(
          ul li:hover a {
             transform: translateX(1rem);
          }
+         ul li img {
+            position: absolute;
+            min-height: 100%;
+            right: 0;
+         }
          .mask {
             position: absolute;
             background: linear-gradient(
@@ -81,7 +87,7 @@ const posts = (await getCollection('blog')).sort(
                #181818d3 75%,
                #1818184b 100%
             );
-            width: 100%;
+            width: 110%;
             height: 100%;
          }
          .title {
@@ -131,12 +137,7 @@ const posts = (await getCollection('blog')).sort(
             left: 0;
             width: 2rem;
             height: 2rem;
-            clip-path: polygon(
-               2rem 0,
-               1.55rem 0,
-               0 1.55rem,
-               0 2rem
-            );
+            clip-path: polygon(2rem 0, 1.55rem 0, 0 1.55rem, 0 2rem);
          }
          ul li a:hover h4,
          ul li a:hover .date {
@@ -202,11 +203,15 @@ const posts = (await getCollection('blog')).sort(
                            animationDelay: `${idx * 0.2}s`,
                         }}>
                         <div class='tag-rb' />
-                        <div class="tag-lt"></div>
-                        <li
-                           style={{
-                              backgroundImage: `url(${post.data.heroImage})`,
-                           }}>
+                        <div class='tag-lt' />
+                        <li>
+                           <MyImage
+                              src={
+                                 post.data.heroImage ??
+                                 '/blog-placeholder-about.jpg'
+                              }
+                              alt={post.data.title}
+                           />
                            <div class='mask' />
                            <a href={`/blog/${post.id}/`}>
                               <h4 class='title'>{post.data.title}</h4>

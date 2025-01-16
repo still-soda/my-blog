@@ -3,7 +3,7 @@ title: '解决 React BrowserRouter 配合 Nginx 使用出现的 404 问题'
 description:
    '解决 React BrowserRouter 配合 Nginx 使用出现的 404 问题'
 pubDate: 'Aug 18 2024'
-heroImage: '/hero/hero-solving-text-wrap-problem.png'
+heroImage: '/src/images/hero/hero-solving-text-wrap-problem.png'
 ---
 
 ## 问题描述

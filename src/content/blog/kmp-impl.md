@@ -2,7 +2,7 @@
 title: 'KMP算法简单实现'
 description: '本文主要讲解了KMP算法的简单实现'
 pubDate: 'Jul 10 2024'
-heroImage: '/hero/hero-kmp-impl.png'
+heroImage: '/src/images/hero/hero-kmp-impl.png'
 ---
 
 ## 简介
