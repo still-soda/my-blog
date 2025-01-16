@@ -33,7 +33,7 @@ jobs:
     - name: FTP Deployer
       uses: sand4rt/ftp-deployer@v1.8
       with:
-        host: 120.77.252.33
+        host: ftp://120.77.252.33
         username: my_blog
         password: prBLdFCseENXdDyd
         cleanup: true
