@@ -1,0 +1,40 @@
+name: Build and Install
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Install pnpm
+      run: npm install -g pnpm
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Build project
+      run: pnpm run build
+
+    - name: FTP Deployer
+      uses: sand4rt/ftp-deployer@v1.8
+      with:
+        host: 120.77.252.33
+        username: my_blog
+        password: prBLdFCseENXdDyd
+        cleanup: true
+          
