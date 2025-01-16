@@ -8,9 +8,7 @@ heroImage: '/src/images/hero/hero-solving-text-wrap-problem.png'
 
 ### 问题
 
-最近我在使用 TailwindCSS+ Next.js 进行开发的时候，出现了一些奇怪的问题：我的导航
-栏在夸克等内核较为老旧的浏览器展现时，标题会在最后一个字的时候自动换行，并且无论
-其长度如何改变，它都坚持在最后一个字换行。
+最近我在使用 TailwindCSS+ Next.js 进行开发的时候，出现了一些奇怪的问题：我的导航栏在夸克等内核较为老旧的浏览器展现时，标题会在最后一个字的时候自动换行，并且无论其长度如何改变，它都坚持在最后一个字换行。
 
 ![image-20240723184904512](https://cos1-1322468699.cos.ap-guangzhou.myqcloud.com/img/202407231853715.png)
 
