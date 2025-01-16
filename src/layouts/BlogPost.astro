@@ -8,11 +8,19 @@ import FormattedDate from '../components/FormattedDate.astro';
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+
+const imageSrc = heroImage
+   ? (
+        await import.meta
+           .glob<{ default: ImageMetadata }>('/src/images/**/*.{jpg,jpeg,png}')
+           [heroImage]()
+     ).default.src
+   : '/blog-placeholder-about.png';
 ---
 
 <html lang='en'>
    <head>
-      <BaseHead title={title} description={description} />
+      <BaseHead title={title} description={description} image={imageSrc} />
       <style>
          body {
             background: #181818;
