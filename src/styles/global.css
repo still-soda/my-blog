@@ -190,6 +190,9 @@ thead {
       padding: 1rem;
    }
 }
+.katex-html {
+   display: none;
+}
 
 .sr-only {
    border: 0;

@@ -7,8 +7,15 @@ import react from '@astrojs/react';
 
 import tailwind from '@astrojs/tailwind';
 
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+
 // https://astro.build/config
 export default defineConfig({
    site: 'https://www.still-soda.top',
    integrations: [mdx(), sitemap(), react(), tailwind()],
+   markdown: {
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+   },
 });
