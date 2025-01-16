@@ -36,5 +36,5 @@ jobs:
         server: 120.77.252.33
         username: my_blog
         password: prBLdFCseENXdDyd
-        dangerous-clean-slate: true
+        local-dir: ./dist/
           
