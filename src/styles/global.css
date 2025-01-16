@@ -23,7 +23,7 @@ body {
    margin: 0;
    padding: 0;
    text-align: left;
-   background: linear-gradient(var(--gray-gradient)) no-repeat;
+   background: #181818;
    background-size: 100% 600px;
    word-wrap: break-word;
    overflow-wrap: break-word;
@@ -134,17 +134,21 @@ img {
    border-radius: 1rem;
 }
 code {
+   font-family: 'JetBrains Mono', sans-serif !important;
+   font-size: 0.8rem;
    padding: 2px 5px;
    background-color: rgb(var(--gray-light));
    border-radius: 0.2rem;
 }
 pre {
+   @apply use-scrollbar;
    padding-block: calc(var(--gap) / 1.25);
    padding-inline: var(--gap);
    margin-bottom: var(--gap);
    border-radius: 1rem;
 }
 pre > code {
+   font-size: 1rem;
    all: unset;
 }
 blockquote {
@@ -203,4 +207,17 @@ thead {
    clip-path: inset(50%);
    /* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
    white-space: nowrap;
+}
+
+.use-scrollbar::-webkit-scrollbar-track-piece {
+   @apply !hidden;
+}
+
+.use-scrollbar::-webkit-scrollbar {
+   background: transparent !important;
+   height: 0.25rem;
+}
+
+.use-scrollbar::-webkit-scrollbar-thumb {
+   @apply !bg-gray-500 !rounded-full;
 }
