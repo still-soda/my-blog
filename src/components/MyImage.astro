@@ -4,12 +4,15 @@ import { Image } from 'astro:assets';
 interface Props {
    src: string;
    alt: string;
+   width?: number;
+   height?: number;
+   quality?: number;
 }
 
 const images = import.meta.glob<{ default: ImageMetadata }>(
    '/src/images/**/*.{jpg,jpeg,png}'
 );
-const { src, alt } = Astro.props;
+const { src, alt, width = '400', height = '200', quality = '90' } = Astro.props;
 
 if (!images[src]) {
    throw new Error(`Image not found: ${src}`);
@@ -27,8 +30,8 @@ if (!images[src]) {
 <Image
    src={images[src]()}
    alt={alt}
-   width='400'
-   height='200'
-   quality='90'
+   width={width}
+   height={height}
+   quality={quality}
    layout='responsive'
 />
