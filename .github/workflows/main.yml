@@ -34,7 +34,7 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: 120.77.252.33
-        username: my_blog
-        password: prBLdFCseENXdDyd
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
         local-dir: ./dist/
           
