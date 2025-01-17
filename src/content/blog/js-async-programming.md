@@ -102,7 +102,7 @@ Promise 允许我们通过**链式调用** `.then()` 的方法来确保异步操
 ```javascript
 const p = new Promise((resolve, reject) => {
   /* 异步操作，以调用 resolve 或 reject 结束 */
-})
+});
 ```
 
 Promise 构造函数仅有一个函数类型的参数，即 Promise 执行器。在执行器函数中，两个入参分别对应 **兑现** 和 **拒绝** 操作。
@@ -214,7 +214,7 @@ getData1('data1')
   .then(data3 => await getData4(data3.next))
   .then(data4 => await getData5(data4.next))
   .then(data5 => await getData6(data5.next))
-	// ...
+  // ...
   .catch(err => console.error(err)); // 最后用 .catch() 处理异常
 ```
 
@@ -295,7 +295,17 @@ function delay(time) {
 }
 ```
 
-在此处，我使用了 `Promise.withResolver` 特性进行编写，你可以尝试不使用该特性进行编写以作为练习。
+在此处，我使用了 `Promise.withResolver` 特性进行编写, 如果你的浏览器不支持 `Promise.withResolver`，则需要改写为：
+
+```javascript
+function delay(time) {
+  let resolve;
+  const promise = new Promise((res) => resolve = res);
+  // 在 time 毫秒后兑现期约
+  setTimeout(() => resolve(), time);
+  return promise;
+}
+```
 
 接下来让我们使用 `delay` 函数来实现目标操作：
 
@@ -369,7 +379,7 @@ setTimeout(() => {
 
 Promise.resolve().then(() => {
   console.log('C');
-})
+});
 
 console.log('D');
 ```
@@ -403,3 +413,105 @@ console.log('D');
 > 这是 JavaScript 事件循环中非常重要的一点。微任务（如 Promise）具有更高的优先级。即使事件循环已经执行了一个宏任务，它会先去执行微任务队列中的任务，直到微任务队列清空为止。因此，在宏任务执行后，**事件循环会去处理微任务**，而不是直接执行下一个宏任务。
 >
 > 也就是说，只要微任务队列中还存在未执行的微任务，就不可能去执行宏任务。
+
+## 实现 async 和 await
+
+在上面我们介绍了 `async` 和 `await` ，它们是 ES2017 中新增的用于简化 Promise 操作的语法糖。那么既然是语法糖，我们就一定可以用原生的操作实现它。
+
+实际上这个语法糖是基于 **生成器（Generator）** 实现的。
+
+> #### 什么是生成器？
+>
+> [生成器](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Iterators_and_generators)是 ES6 中新增的一个特性，它允许你定义一个可以暂停执行并在稍后恢复的函数。我们可以通过 `function*` 来定义一个生成器函数，调用这个函数将会返回一个生成器对象，而这个生成器对象满足[迭代器协议](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols#%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%8D%8F%E8%AE%AE)。
+>
+> 在生成器函数中，我们可以使用 `yield` 来从当前位置返回一个值，而当下一次调用的时候，程序会从上次返回的地方继续执行，直到遇到下一个 `yield` 或 `return`。需要注意的是，生成器函数中的 `return` 表示终止生成。举个例子：
+>
+> ```javascript
+> // 定义生成器函数
+> function* getGenerator(n) {
+>   yield n;
+>   yield n + 10;
+>   yield n + 20;
+> }
+> // 创建生成器对象
+> const gen = getGenerator(3);
+> // 通过 .next() 调用生成器
+> console.log(gen.next());  // => { value: 3, done: false }
+> console.log(gen.next());  // => { value: 13, done: false }
+> console.log(gen.next());  // => { value: 23, done: false }
+> console.log(gen.next());  // => { value: undefined, done: true }
+> ```
+>
+> 可以看到每次调用生成器对象的 `.next()` 方法，都会返回一个包含 `done` 和 `value` 的对象，对应的含义为：
+>
+> - `done`：迭代是否已经完成；
+> - `value`：`yield` 的返回结果，当 `done` 为 `true` 的时候其值为 `undefined`；
+
+实现思路的其实很简单，说白了就是基于生成器去按顺序地等待 Promise 兑现：
+
+1. 用 `function asyncFn(fn)` 代替 `async function`，其参数 `fn` 为一个生成器函数，返回值为一个返回 Promise 的函数；
+2. `fn` 中用 `yield` 代替 `await`，`yield` 每次暂停返回一个 Promise；
+3. 创建一个函数并返回，这个函数需要完成以下操作：
+   1. 创建一个 Promise，并分离出它的 `resolve` 方法；
+   2. 创建一个生成器；
+   3. 定义一个 `waitNext` 函数，这个函数用于从生成器中取出一个 Promise 进行等待，并在兑现后执行递归调用自己。这个函数带有一个参数 `value`，表示上一轮 Promise 兑现的结果，当迭代结束的时候，主函数将被兑现为该值。
+   4. 调用 `waitNext` 函数；
+   5. 返回先前创建的 Promise；
+
+接下来让我们用代码实现它：
+
+```javascript
+function asyncFn(fn) {
+  return () => {
+    let resolve, reject;
+    const promise = new Promise((res, rej) => {
+      [resolve, reject] = [res, rej];
+    });
+    const gen = fn();
+    
+    const waitNext = (value) => {
+      const { value: promise, done } = gen.next();
+      if (done) {
+        resolve(value);
+        return;
+      }
+      promise
+        .then((result) => waitNext(result))
+      	.catch((err) => reject(err));
+    }
+    waitNext(undefined);
+    
+    return promise;
+  }
+}
+```
+
+这样，我们就实现了 `async/await` 语法糖。
+
+对于以下使用 `async` 和 `await` 的代码片段：
+
+```javascript
+const getData = async () => {
+  console.log('A');
+  await delay(1000);
+  console.log('B');
+  await delay(1000);
+  console.log('C');
+}
+getData().then(() => console.log('D'));
+```
+
+我们可以写成这种形式：
+
+```javascript
+const getData = asyncFn(function* () {
+  console.log('A');
+  yield delay(1000);
+  console.log('B');
+  yield delay(1000);
+  console.log('C');
+});
+getData().then(() => console.log('D'));
+```
+
+效果完全一致！至此，我们完成了这个语法糖的编写。
