@@ -127,7 +127,7 @@ const todo = new Promise(/* ... */);
 todo
   .then(/* do something ... */)
   .then(/* do something ... */)
-	.then(/* do something ... */);
+  .then(/* do something ... */);
 ```
 
 这样的写法称为**链式调用**，理解起来也非常简单，就是先干什么**然后 (then) **干什么。
@@ -142,8 +142,8 @@ todo
 todo
   .then(/* do something ... */)		// step.1
   .then(/* do something ... */)		// step.2
-	.then(/* do something ... */)		// step.3
-	.catch(err => console.log(err));// step.4
+  .then(/* do something ... */)		// step.3
+  .catch(err => console.log(err));// step.4
 ```
 
 假设链上任意一个点抛出了错误或拒绝，函数链将直接跳到 `.catch()` 的调用。例如：*step.1* 发生错误或拒绝，函数链将会略过 *step.2* 和 *step.3*，直接跳到 *step.4* 处理错误。
@@ -316,7 +316,7 @@ OK，大功告成！你应该已经意识到了使用 `await` 在某些情况下
 
 ## JavaScript 异步模型
 
-JavaScript 能够实现异步的核心在于其采用了异步模型。JS 异步模型是通过 **事件循环（Event Loop）**和 **任务队列（Task Queue）**来实现的。
+JavaScript 能够实现异步的核心在于其采用了异步模型。JS 异步模型是通过 **事件循环（Event Loop）** 和 **任务队列（Task Queue）** 来实现的。
 
 ### 关键组成部分
 
@@ -324,7 +324,7 @@ JavaScript 能够实现异步的核心在于其采用了异步模型。JS 异步
 
 > 先来聊聊 **栈（Stack）** 这个数据结构吧。
 >
-> 栈是一种**先进后出（LIFO，Last In First Out）**的数据结构。
+> 栈是一种 **先进后出（LIFO，Last In First Out）** 的数据结构。
 >
 > 你可以把一个栈想象成一张餐桌，栈中每一条数据就是餐桌上的一个盘子。盘子只能通过堆叠的方式存放，那么最先放上去的盘子就会在最底部（即最先进入的数据在栈底），最后放上去的盘子在最上面（即最后进入的数据在栈顶）。
 >
@@ -336,13 +336,13 @@ JavaScript 能够实现异步的核心在于其采用了异步模型。JS 异步
 
 #### 任务队列
 
-> **队列（Queue）**是一种**先进先出（FIFO，First In First Out）**的数据结构。
+> **队列（Queue）** 是一种 **先进先出（FIFO，First In First Out）** 的数据结构。
 >
 > 顾名思义，可以把队列想象成一条正在排队的队伍，每次只能从队头消费，而最先入队的人越靠前，所以我们称为先进先出。
 
 任务队列也称为事件队列，是异步任务等待执行的地方。异步任务进入任务队列后，会在主线程有空的时候被取出执行。
 
-任务队列中的任务分为 **微任务（Microtasks）**和 **宏任务（Macrotasks）**，**宏任务在微任务后执行**。
+任务队列中的任务分为 **微任务（Microtasks）** 和 **宏任务（Macrotasks）** ，**宏任务在微任务后执行**。
 
 - 微任务包括：`Promise.then`、`MutationObserver`；
 
