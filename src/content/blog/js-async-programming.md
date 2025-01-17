@@ -1,5 +1,5 @@
 ---
-title: '一文讲清 JavaScript 异步编程'
+title: '一文讲清楚 JavaScript 异步编程'
 description: '本文介绍了 JavaScript 的异步编程模型通过使用 Promise、async/await 等机制，使得程序能够在不阻塞主线程的情况下执行多个任务，提高了效率和代码的可维护性。'
 pubDate: 'Jan 17 2025'
 heroImage: '/src/images/hero/hero-js-async-programming.png'
@@ -83,7 +83,7 @@ getImage('path/to/img', (img) => {
 - **待定 `pending`**：这是期约的初始状态，表示操作未完成前的状态；
 
 - **兑现 `fulfilled`**：表示操作成功，也可以称为 `resolved`；
-- **失败 `rejected`**：表示操作失败；
+- **拒绝 `rejected`**：表示操作失败；
 
 其中，`fulfilled` 和 `rejected` 都表示操作完成的状态，合称落定 `settled`。
 
@@ -111,7 +111,7 @@ Promise 构造函数仅有一个函数类型的参数，即 Promise 执行器。
 
 ```javascript
 resolve(value); // 兑现时调用
-reject(reson);  // 拒绝时调用
+reject(reason);  // 拒绝时调用
 ```
 
 如果你既不调用 `resolve` 也不调用 `reject` ，将会导致 Promise **永远处于待定状态**。这个时候如果你使用 `await` 去等待该 Promise 落定，将会导致等待者永远阻塞！
@@ -157,10 +157,10 @@ Promise.resolve()	// 立即兑现
   .then(/* ... */);
 
 Promise.reject()	// 立即拒绝
-	.then(/* ... */);
+  .then(/* ... */);
 ```
 
-#### 全部落定
+#### 全部兑现
 
 如果你需要创建一个 Promise 来等待其他所有 Promise 落定，你可以使用 `Promise.all()`：
 
@@ -168,11 +168,11 @@ Promise.reject()	// 立即拒绝
 const allSettle = Promise.all([promise1, promise2, promise3]);
 ```
 
-`allSettle` 将在三个 Promise 全部落定的时候兑现，如果其中有任意一个拒绝，它也将会拒绝。
+`allSettle` 将在三个 Promise 全部兑现的时候兑现，如果其中有任意一个拒绝，它也将会拒绝。
 
-#### 任意落定
+#### 任意兑现
 
-只要一个落定就兑现，全都不落定就拒绝。
+只要一个兑现就兑现，全都拒绝就拒绝。
 
 ```javascript
 const anySettle = Promise.any([promise1, promise2, promise3]);
@@ -215,7 +215,7 @@ getData1('data1')
   .then(data4 => await getData5(data4.next))
   .then(data5 => await getData6(data5.next))
 	// ...
-	.catch(err => console.error(err)); // 最后用 .catch() 处理异常
+  .catch(err => console.error(err)); // 最后用 .catch() 处理异常
 ```
 
 这样一来，你会发现回调地狱神奇地被消除了，变得格外顺眼，其可维护性自然也就变得很好了。
