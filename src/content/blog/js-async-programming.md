@@ -1,5 +1,5 @@
 ---
-title: '异步编程'
+title: '一文讲清 JavaScript 异步编程'
 description: '本文介绍了 JavaScript 的异步编程模型通过使用 Promise、async/await 等机制，使得程序能够在不阻塞主线程的情况下执行多个任务，提高了效率和代码的可维护性。'
 pubDate: 'Jan 17 2025'
 heroImage: '/src/images/hero/hero-js-async-programming.png'
@@ -60,8 +60,8 @@ getImage('path/to/img', (img) => {
 >     getData3(data2.next, (data3) => {
 >       getData4(data3.next, (data4) => {
 >         getData5(data4.next, (data5) => {
-> 					getData6(data5.next, (data6) => {
-> 						// ...
+>           getData6(data5.next, (data6) => {
+>             // ...
 >           });
 >         });
 >       });
