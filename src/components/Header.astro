@@ -33,68 +33,69 @@ const { fixed = true, boxShadow = true } = Astro.props;
       top: 1em;
       max-width: 1224px;
       padding: 0.7em 2em;
-      background: rgb(24, 24, 24, 0.5);
+      background: #181818;
       display: flex;
       align-items: center;
       z-index: 9999;
-
       animation: fadeIn 1s ease forwards;
-
       backdrop-filter: blur(10px);
       box-shadow:
          0 0 10px rgba(0, 0, 0, 0.5),
          inset 0 2px 7px rgba(255, 255, 255, 0.2),
          inset 0 -2px 7px rgba(0, 0, 0, 0.3),
          inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+   }
 
-      & .name {
-         font-size: 1em;
-         color: #ff7b00;
-         margin: 0.5em;
-      }
+   nav .name {
+      font-size: 1em;
+      color: #ff7b00;
+      margin: 0.5em;
+   }
 
-      & .items {
-         display: flex;
-         gap: 2em;
-         margin-left: auto;
-         height: 100%;
-         align-items: center;
-         justify-content: center;
-         color: white;
-      }
+   nav .items {
+      display: flex;
+      gap: 2em;
+      margin-left: auto;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      color: white;
+   }
 
-      .items a,
-      .name {
-         position: relative;
-         transition: 0.2s ease-in-out;
+   nav .items a,
+   nav .name {
+      position: relative;
+      transition: 0.2s ease-in-out;
+   }
 
-         &:hover {
-            cursor: pointer;
-            color: #ff7b00;
-            &::before {
-               background: #ff7b00;
-            }
-         }
+   nav .items a:hover,
+   nav .name:hover {
+      cursor: pointer;
+      color: #ff7b00;
+   }
 
-         &.active {
-            &::before {
-               background: #ff7b00;
-               width: 60%;
-            }
-         }
+   nav .items a:hover::before,
+   nav .name:hover::before {
+      background: #ff7b00;
+   }
 
-         &::before {
-            content: '';
-            position: absolute;
-            bottom: -0.5em;
-            left: 0;
-            width: 0.4em;
-            height: 0.4em;
-            border-radius: 0.2em;
-            background: transparent;
-            transition: 0.2s ease-in-out;
-         }
-      }
+   nav .items a.active::before,
+   nav .name.active::before {
+      background: #ff7b00;
+      width: 60%;
+   }
+
+   nav .items a::before,
+   nav .name::before {
+      content: '';
+      position: absolute;
+      bottom: -0.5em;
+      left: 0;
+      width: 0.4em;
+      height: 0.4em;
+      border-radius: 0.2em;
+      background: transparent;
+      transition: 0.2s ease-in-out;
    }
 
    @keyframes fadeIn {
