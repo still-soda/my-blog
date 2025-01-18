@@ -1,5 +1,5 @@
 ---
-title: '一文讲清楚 JavaScript 异步编程'
+title: '一文讲清 JavaScript 异步编程'
 description: '本文介绍了 JavaScript 的异步编程模型通过使用 Promise、async/await 等机制，使得程序能够在不阻塞主线程的情况下执行多个任务，提高了效率和代码的可维护性。'
 pubDate: 'Jan 17 2025'
 heroImage: '/src/images/hero/hero-js-async-programming.png'
@@ -89,7 +89,7 @@ getImage('path/to/img', (img) => {
 
 ### 使用 Promise
 
-Promise 允许我们通过**链式调用** `.then()` 的方法来确保异步操作执行的先后次序，并用 `.catch()` 来处理异步操作链上发生的错误。
+Promise 允许我们通过**链式调用** `.then()` 的方法来确保异步操作执行的先后次序，用 `.catch()` 来处理异步操作链上发生的错误，并用 `.finally()` 来处理异步操作链上的收尾操作。
 
 老样子，还是建议去阅读 MDN 文档：[Promise - MDN  Docs](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/Promise)。
 
@@ -113,9 +113,12 @@ resolve(value); // 兑现时调用
 reject(reason);  // 拒绝时调用
 ```
 
-> 这里需要澄清的一点是 Promise 对象究竟是一个什么东西。
+> #### Promise 对象究竟是一个什么东西?
+>
+> 让我们看看这个代码片段：
 > 
 > ```javascript
+> // 创建一个 100ms 后落定为 123 的期约 p
 > const p = new Promise((resolve) => {
 >   setTimeout(() => {
 >     resolve(123)
@@ -149,35 +152,37 @@ reject(reason);  // 拒绝时调用
 
 需要注意的是，调用 `reject` 将会导致 Promise 的 `.catch()` 方法被调用，如果没有抛出任何一个错误，`.catch(err => {})` 接受到的 `err` 参数将为 `undefined`。
 
-#### 使用 then 和 catch
+#### 使用 then 、 catch 和 finally
 
-使用 Promise 的一种方法是使用 `.then()` 来指定执行顺序：
+使用 Promise 的一种方法是使用 `.then()` 来指定执行顺序，用 `.finally()` 来收尾：
 
 ```javascript
 const todo = new Promise(/* ... */);
 todo
-  .then(/* do something ... */)
-  .then(/* do something ... */)
-  .then(/* do something ... */);
+  .then(() => /* todo */)
+  .then(() => /* todo */)
+  .then(() => /* todo */)
+  .finally(() => /* todo */);
 ```
 
-这样的写法称为**链式调用**，理解起来也非常简单，就是先干什么 **然后 (then)** 干什么。
+这样的写法称为**链式调用**，理解起来也非常简单，就是先干什么 **然后 (then)** 干什么， **最后 (finally)** 干什么。
 
 > #### 链式调用？
 >
 > 链式调用是一种非常 nice 的函数调用风格，它允许我们通过编写 “函数链” 的形式来对目标执行一系列操作。实现链式调用的最简单方法是在对象方法中返回 `this`，确保方法的返回值为对象本身。
 
-我们可以在链式调用的最后追加一个 `.catch()` 的调用来处理链上抛出的错误：
+`.catch()` 通常被用于处理链上抛出的错误，而无论异步操作拒绝或兑现，最终都会调用 `.finally()` 执行最后操作：
 
 ```javascript
 todo
-  .then(/* do something ... */)		// step.1
-  .then(/* do something ... */)		// step.2
-  .then(/* do something ... */)		// step.3
-  .catch(err => console.log(err));// step.4
+  .then(() => /* todo */)		    // step.1
+  .then(() => /* todo */)		    // step.2
+  .then(() => /* todo */)		    // step.3
+  .catch(err => console.log(err));  // step.4
+  .finally(() => /* todo */);       // step.5
 ```
 
-假设链上任意一个点抛出了错误或拒绝，函数链将直接跳到 `.catch()` 的调用。例如：*step.1* 发生错误或拒绝，函数链将会略过 *step.2* 和 *step.3*，直接跳到 *step.4* 处理错误。
+假设链上任意一个点抛出了错误或拒绝，函数链将直接跳到 `.catch()` 的调用。例如：*step.1* 发生错误或拒绝，函数链将会略过 *step.2* 和 *step.3*，直接跳到 *step.4* 处理错误，最后执行 `step.5` 做最后的处理。
 
 #### 立即落定
 
@@ -211,7 +216,7 @@ const anySettle = Promise.any([promise1, promise2, promise3]);
 
 #### 分解执行器
 
-`Promise.withResolver()` 是一个非常新的特性，其在 2024 年刚刚被各家浏览器广泛支持。这是一个非常好用的方法，可以让你将执行器的两个参数从执行器中抽离。
+`Promise.withResolver()` 是一个非常新的特性，其在 2024 年刚刚得到各家主流浏览器的广泛支持。这是一个非常好用的方法，可以让你将执行器的两个参数从执行器中抽离。
 
 ```javascript
 let { promise, resolve, reject } = Promise.withResolver();
@@ -255,7 +260,7 @@ getData1('data1')
 
 ### async 与 await
 
-好吧，现在我问你，同步的英文是什么？答案是：synchronization，缩写为 sync。而异步的英文则是在同步英文的前面加上一个 *a* ，即 asynchronization，简称 **async**。
+好吧，现在我问你，同步的英文是什么？答案是：*synchronization*，缩写为 *sync*。而异步的英文则是在同步英文的前面加上一个 *a* ，即 *asynchronization*，简称 ***async***。
 
 #### 使用 async
 
