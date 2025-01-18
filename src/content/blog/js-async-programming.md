@@ -108,11 +108,42 @@ const p = new Promise((resolve, reject) => {
 Promise 构造函数仅有一个函数类型的参数，即 Promise 执行器。在执行器函数中，两个入参分别对应 **兑现** 和 **拒绝** 操作。
 
 `resolve` 和 `reject` 也是函数，你可以给它们任何实际的名称。它们的函数签名很简单：它们接受一个任意类型的参数。你可以在执行器的函数体中调用 `resolve` 或 `reject` 来返回一个值，**表示该 Promise 落定的值**。如果调用时 `value` 和 `reason` 都为空，Promise 将落定为 `undefined`。
-
 ```javascript
 resolve(value); // 兑现时调用
 reject(reason);  // 拒绝时调用
 ```
+
+> 这里需要澄清的一点是 Promise 对象究竟是一个什么东西。
+> 
+> ```javascript
+> const p = new Promise((resolve) => {
+>   setTimeout(() => {
+>     resolve(123)
+>   }, 100);
+> });
+>
+> console.log(p);       // => [object Promise]
+>
+> setTimeout(() => {
+>   console.log(p);     // => [object Promise]
+> }, 200);
+> 
+> p.then(val => {
+>   console.log(val);   // => 123
+> });
+> 
+> const pp = await p;
+> console.log(pp);      // => 123
+> ```
+> 
+> 这里我们列举了使用 Promise 的四种情况，让我来逐一解释：
+> 
+> 1. **第一种情况**：`p` 显然是一个 Promise 对象，因此输出结果为 Promise 对象没有问题；
+> 2. **第二种情况**: 虽然在 $200ms$ 后 `p` 已经落定为值 `123`，但是如果不使用 `await`（后文会做介绍），`p` 并不会直接转化为落定的值，而是需要我们使用 `.then()` 去获取这个值；
+> 3. **第三种情况**：就是如何通过 `.then()` 去获取落定的值并对其进行操作；
+> 4. **第四种情况**：使用 `await` 关键字等待 `p` 落定的值，并将其赋予 `pp`。注意在此时 `p` 仍然为 Promise 对象，而 `pp` 为 `p` 落定的值；
+>
+> 可见 Promise 表示的一种未来将会落定为具体值的对象，并不是其所落定的值。其落定的值就是调用 `resolve` 或 `reject` 时传入的值。
 
 如果你既不调用 `resolve` 也不调用 `reject` ，将会导致 Promise **永远处于待定状态**。这个时候如果你使用 `await` 去等待该 Promise 落定，将会导致等待者永远阻塞！
 
