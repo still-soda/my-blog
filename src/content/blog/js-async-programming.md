@@ -198,7 +198,7 @@ todo
   .finally(() => /* todo */);       // step.5
 ```
 
-假设链上任意一个点抛出了错误或拒绝，函数链将直接跳到 `.catch()` 的调用。例如：*step.1* 发生错误或拒绝，函数链将会略过 *step.2* 和 *step.3*，直接跳到 *step.4* 处理错误，最后执行 `step.5` 做最后的处理。
+假设链上任意一个点抛出了错误或拒绝，函数链将直接跳到 `.catch()` 的调用。例如：*step.1* 发生错误或拒绝，函数链将会略过 *step.2* 和 *step.3*，直接跳到 *step.4* 处理错误，最后执行 *step.5* 做最后的处理。
 
 #### 立即落定
 
@@ -261,18 +261,18 @@ let promise = new Promise((res, rej) => {
 ```javascript
 // 这里假设每个 getData 都返回对应的 Promise
 getData1('data1')
-  .then(data1 => await getData2(data1.next))
-  .then(data2 => await getData3(data2.next))
-  .then(data3 => await getData4(data3.next))
-  .then(data4 => await getData5(data4.next))
-  .then(data5 => await getData6(data5.next))
+  .then(async (data1) => await getData2(data1.next))
+  .then(async (data2) => await getData3(data2.next))
+  .then(async (data3) => await getData4(data3.next))
+  .then(async (data4) => await getData5(data4.next))
+  .then(async (data5) => await getData6(data5.next))
   // ...
   .catch(err => console.error(err)); // 最后用 .catch() 处理异常
 ```
 
 这样一来，你会发现回调地狱神奇地被消除了，变得格外顺眼，其可维护性自然也就变得很好了。
 
-但是你可能会感到迷惑，这个 `await` 是个什么玩意儿？字面意思上看起来像是等待？实际上确实如此。
+但是你可能会感到迷惑，这个 `async` 和 `await` 是个什么玩意儿？`await` 的字面意思上看起来像是等待？实际上确实如此。
 
 ### async 与 await
 
