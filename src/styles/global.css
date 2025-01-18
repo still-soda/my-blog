@@ -137,6 +137,7 @@ img {
    margin-inline: auto;
    height: auto;
    border-radius: 1rem;
+   margin-bottom: var(--gap);
 }
 code {
    font-family: 'JetBrains Mono', sans-serif !important;
