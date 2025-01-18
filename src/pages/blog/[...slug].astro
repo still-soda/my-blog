@@ -37,7 +37,7 @@ function buildHeadingTree(
       } else {
          const subTree = buildHeadingTree(headings, depth + 1, i);
          const { tree, length: len } = subTree;
-         i += len;
+         i += len - 1;
          length += len;
          if (tree.length > 0) {
             headingTree.push(tree);
@@ -47,6 +47,8 @@ function buildHeadingTree(
    return { tree: headingTree, length };
 }
 const headingTree: HeadingTree[] = buildHeadingTree(headings, 2).tree;
+console.log(headings);
+console.log(headingTree);
 ---
 
 <style></style>
