@@ -2,6 +2,8 @@
 import { type CollectionEntry, getCollection } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { render } from 'astro:content';
+import ToC from '../../components/ToC.astro';
+import type { MarkdownHeading } from 'astro';
 
 export async function getStaticPaths() {
    const posts = await getCollection('blog');
@@ -13,9 +15,43 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
+type HeadingTree = Array<HeadingTree> | { text: string; slug: string };
+
+function buildHeadingTree(
+   headings: MarkdownHeading[],
+   depth: number,
+   start = 0
+) {
+   const headingTree: HeadingTree[] = [];
+   let length = 0;
+   for (let i = start; i < headings.length; i++) {
+      const heading = headings[i];
+      if (heading.depth < depth) {
+         return { tree: headingTree, length };
+      }
+      if (heading.depth === depth) {
+         headingTree.push(heading);
+         length++;
+      } else {
+         const subTree = buildHeadingTree(headings, depth + 1, i);
+         const { tree, length: len } = subTree;
+         i += len;
+         length += len;
+         if (tree.length > 0) {
+            headingTree.push(tree);
+         }
+      }
+   }
+   return { tree: headingTree, length };
+}
+const headingTree: HeadingTree[] = buildHeadingTree(headings, 2).tree;
 ---
 
+<style></style>
+
 <BlogPost {...post.data}>
+   <ToC headings={headingTree} />
    <Content />
 </BlogPost>

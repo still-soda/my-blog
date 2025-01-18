@@ -1,0 +1,70 @@
+---
+import ToCComponent from './ToC';
+
+type HeadingTree = Array<HeadingTree> | { text: string; slug: string };
+
+interface Props {
+   headings: HeadingTree[];
+}
+
+const { headings } = Astro.props;
+---
+
+<style>
+   .rotate-180 {
+      transform: rotate(180deg);
+   }
+   .top-line {
+      border-top: 2px solid #e2e8f0;
+   }
+   div#toc > ol {
+      margin-block: 1rem;
+   }
+</style>
+
+<script>
+   const nav = document.getElementById('toc-nav')!;
+   const toc = document.getElementById('toc')!;
+   const icon = document.getElementById('toc-icon')!;
+   let timer;
+
+   nav.addEventListener('click', () => {
+      const firstChild = toc.firstElementChild as HTMLElement;
+      const { height } = firstChild.getBoundingClientRect();
+      const zeroHeight = toc.style.height === '0px';
+      toc.style.height = zeroHeight ? `calc(${height}px + 1rem)` : '0px';
+      icon.classList.toggle('rotate-180');
+
+      if (zeroHeight) {
+         toc.classList.add('top-line');
+         toc.style.paddingTop = zeroHeight ? '0.5rem' : '0px';
+         timer && clearTimeout(timer);
+      } else {
+         timer && clearTimeout(timer);
+         timer = setTimeout(() => {
+            toc.style.paddingTop = zeroHeight ? '0.5rem' : '0px';
+            toc.classList.remove('top-line');
+         }, 400);
+      }
+   });
+</script>
+
+<nav
+   id='toc-nav'
+   class='mb-4 rounded-xl overflow-hidden border-2 hover:cursor-pointer border-gray-200'>
+   <div class='flex py-1 px-3 justify-between items-center'>
+      <div>目录</div>
+      <li
+         id='toc-icon'
+         class='fas fa-angle-down transition-transform duration-500'>
+      </li>
+   </div>
+   <div
+      id='toc'
+      class='will-change-[height] overflow-hidden transition-[height] duration-500 px-3 hover:cursor-default'
+      style={{
+         height: '0px',
+      }}>
+      <ToCComponent headings={headings} />
+   </div>
+</nav>
