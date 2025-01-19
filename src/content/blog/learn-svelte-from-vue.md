@@ -9,6 +9,8 @@ heroImage: '/src/images/hero/hero-learn-svelte-from-vue.png'
 
 我对 Svelte 这个前端框架早有耳闻，但是之前一直没有上手学习过它。最近我花了点时间看了看官方文档，浅浅地了解了这个号称 “无虚拟 DOM 且非常快速的框架”。接下来我通过将类比 Vue 来介绍 Svelte 的基础语法和功能。
 
+![Svelte封面](/images/learn-svelte-from-vue/img-1.png)
+
 ## 组件的基本结构
 
 在 Vue3 中，一个组件的基本结构如下所示：
