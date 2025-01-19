@@ -99,7 +99,7 @@ Svelte 使用诸如 ` {#if condition}` 之类的**控制流语句**来实现条�
 
 #### 条件渲染
 
-在 Vue 中，我们通过 `v-if` 、`v-else-if` 和 `v-else` 指令来实现条件渲染，而在 Svelte 中，则使用  `${#if}...{:else-if}...{:else}...{/if}` 来实现：
+在 Vue 中，我们通过 `v-if` 、`v-else-if` 和 `v-else` 指令来实现条件渲染，而在 Svelte 中，则使用  `${#if}...{:else if}...{:else}...{/if}` 来实现：
 
 ```svelte
 <script>
@@ -108,7 +108,7 @@ Svelte 使用诸如 ` {#if condition}` 之类的**控制流语句**来实现条�
 
 {#if count < 10}
   <p>Count 小于 10</p>
-{:else-if count === 10}
+{:else if count === 10}
   <p>Count 等于 10</p>
 {:else}
   <p>Count 大于 10</p>
@@ -153,7 +153,7 @@ Svelte 使用诸如 ` {#if condition}` 之类的**控制流语句**来实现条�
 </script>
 
 <template>
-    <p v-for="item, index in list" key="index">
+    <p v-for="item, index in list" :key="index">
         第 {{ index }} 个元素的内容是 {{ item }}
     </p>
 </template>
