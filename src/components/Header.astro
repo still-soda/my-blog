@@ -7,8 +7,34 @@ interface Props {
 const { fixed = true, boxShadow = true } = Astro.props;
 ---
 
+<script>
+   const expand = () => {
+      const menu = document.querySelector('#menu')!;
+      menu.classList.toggle('move-out');
+      menu.classList.toggle('delay-300');
+
+      const secondMenu = document.querySelector('#second-menu') as HTMLElement;
+      secondMenu.classList.toggle('-translate-x-full');
+      secondMenu.classList.toggle('opacity-0');
+      secondMenu.classList.toggle('delay-300');
+
+      const secondNav = document.querySelector('#second-nav')!;
+      secondNav.classList.toggle('hide-second-nav');
+      secondNav.classList.toggle('delay-300');
+
+      document.querySelector('#switch')?.classList.toggle('-rotate-90');
+   };
+
+   (document.querySelector('#switch') as HTMLElement).onclick = expand;
+   (document.querySelector('#second-menu') as HTMLElement).childNodes.forEach(
+      (node) => {
+         node.addEventListener('click', expand);
+      }
+   );
+</script>
+
 <nav
-   class='text-sm md:text-base w-[90vw] rounded-lg md:rounded-2xl md:w-[80vw]'
+   class='text-sm md:text-base w-[90vw] rounded-lg md:rounded-2xl md:w-[80vw] relative'
    style={{
       position: fixed ? 'fixed' : 'relative',
       animation: fixed ? 'fadeIn 1s ease forwards' : 'none',
@@ -21,10 +47,60 @@ const { fixed = true, boxShadow = true } = Astro.props;
       <a href='/blog' class='block text-white'>.blog()</a>
       <!-- <a href='/contact' class='hidden md:block text-white'>.contact()</a> -->
    </div>
+   <div class='mobile-menu'>
+      <div class='text-white flex gap-[0.55rem] items-center'>
+         <div class='overflow-hidden w-fit'>
+            <div
+               id='menu'
+               class='top-0 flex gap-[0.55rem] items-center transition-transform duration-700 delay-300'>
+               <a href='/about' class='block text-white'>.about()</a>
+               <a href='/blog' class='block text-white'>.blog()</a>
+            </div>
+         </div>
+         <div
+            id='switch'
+            class='switch hover:cursor-pointer active:scale-90 transition-transform text-[#181818]'>
+            <i class='fas fa-caret-left'></i>
+         </div>
+      </div>
+   </div>
+
+   <div
+      id='second-nav'
+      class='absolute bg-white text-white bottom-[-4em] right-0 second-nav text-sm md:text-base w-[90vw] rounded-lg md:rounded-2xl md:w-[80vw] hide-second-nav transition-all duration-300 delay-300'>
+      <div class='overflow-auto w-full hide-scrollbar'>
+         <div
+            id='second-menu'
+            class='flex gap-[0.55rem] [&>a]:py-1 [&>a]:px-1.5 [&>a]:rounded-lg [&>a]:bg-[rgb(255,123,0)] -translate-x-full opacity-0 transition-all duration-700'>
+            <a href='/' class='block text-white'>.is()</a>
+            <a href='/about' class='block text-white'>.about()</a>
+            <a href='/blog' class='block text-white'>.blog()</a>
+         </div>
+      </div>
+   </div>
 </nav>
+
 <style>
-   * {
+   *:not(i) {
       font-family: 'JetBrains Mono';
+   }
+
+   .move-out {
+      transform: translateX(100%);
+   }
+
+   .delay-300 {
+      transition-delay: 300ms;
+   }
+
+   .hide-second-nav {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+   }
+
+   .hide-scrollbar::-webkit-scrollbar {
+      display: none;
    }
 
    nav {
@@ -33,11 +109,22 @@ const { fixed = true, boxShadow = true } = Astro.props;
       top: 1em;
       max-width: 1224px;
       padding: 0.7em 2em;
-      background: rgb(24, 24, 24, 0.5);
       display: flex;
       align-items: center;
       z-index: 9999;
       animation: fadeIn 1s ease forwards;
+      background: rgb(24, 24, 24, 0.5);
+      backdrop-filter: blur(10px);
+      box-shadow:
+         0 0 10px rgba(0, 0, 0, 0.5),
+         inset 0 2px 7px rgba(255, 255, 255, 0.2),
+         inset 0 -2px 7px rgba(0, 0, 0, 0.3),
+         inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+   }
+
+   .second-nav {
+      padding: 0.7em 0.7em;
+      background: rgb(24, 24, 24, 0.5);
       backdrop-filter: blur(10px);
       box-shadow:
          0 0 10px rgba(0, 0, 0, 0.5),
@@ -96,6 +183,54 @@ const { fixed = true, boxShadow = true } = Astro.props;
       border-radius: 0.2em;
       background: transparent;
       transition: 0.2s ease-in-out;
+   }
+
+   nav .mobile-menu {
+      display: none;
+      margin-left: auto;
+      position: relative;
+      transition: transform 0.2s ease-in-out;
+   }
+
+   nav .switch {
+      width: 1.2rem;
+      height: 1.2rem;
+      border-radius: 50%;
+      background: #ff7b00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+   }
+
+   nav .menu {
+      position: absolute;
+      padding-inline: 0.5rem;
+      padding-block: 0.5rem;
+      top: 2rem;
+      left: 0;
+      width: 6rem;
+
+      background: rgb(24, 24, 24, 0.5);
+      backdrop-filter: blur(10px);
+      box-shadow:
+         0 0 10px rgba(0, 0, 0, 0.5),
+         inset 0 2px 7px rgba(255, 255, 255, 0.2),
+         inset 0 -2px 7px rgba(0, 0, 0, 0.3),
+         inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+   }
+
+   @media (max-width: 768px) {
+      nav {
+         padding: 0.7em 1em;
+      }
+
+      nav .items {
+         display: none;
+      }
+
+      nav .mobile-menu {
+         display: flex;
+      }
    }
 
    @keyframes fadeIn {
