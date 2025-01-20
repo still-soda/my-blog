@@ -94,7 +94,7 @@ const { fixed = true, boxShadow = true } = Astro.props;
    }
 
    .hide-second-nav {
-      transform: translateY(-100%);
+      transform: scaleY(0) translateY(-100%);
       opacity: 0;
       pointer-events: none;
    }
@@ -123,6 +123,7 @@ const { fixed = true, boxShadow = true } = Astro.props;
    }
 
    .second-nav {
+      z-index: 9998;
       padding: 0.7em 0.7em;
       background: rgb(24, 24, 24, 0.5);
       backdrop-filter: blur(10px);
