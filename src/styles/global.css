@@ -176,6 +176,9 @@ ul {
 ul ul {
    @apply list-disc ml-4 mb-0 marker:text-[#ff7b00];
 }
+del {
+   @apply text-gray-400 px-0.5 decoration-white;
+}
 hr {
    border: none;
    border-top: 1px solid rgb(var(--gray-light));
