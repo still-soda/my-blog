@@ -7,6 +7,7 @@ interface Props {
    width?: number;
    height?: number;
    quality?: number;
+   zeroRadius?: boolean;
 }
 
 const images = import.meta.glob<{ default: ImageMetadata }>(
@@ -24,6 +25,7 @@ if (!images[src]) {
       position: absolute;
       min-height: 100%;
       right: 0;
+      filter: contrast(1.2) brightness(1.1);
    }
 </style>
 
@@ -33,5 +35,8 @@ if (!images[src]) {
    width={width}
    height={height}
    quality={quality}
+   style={{
+      borderRadius: Astro.props.zeroRadius ? '0' : undefined,
+   }}
    layout='responsive'
 />

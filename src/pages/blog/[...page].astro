@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import BaseHead from '../../components/BaseHead.astro';
+import Pagination from '../../components/Pagination.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { SITE_DESCRIPTION } from '../../consts';
@@ -56,7 +57,8 @@ const posts = page.data;
             background-repeat: no-repeat;
             clip-path: polygon(
                2rem 0,
-               100% 0,
+               calc(100% - 0.5rem) 0,
+               100% 0.5rem,
                100% calc(100% - 2rem),
                calc(100% - 2rem) 100%,
                0 100%,
@@ -198,7 +200,7 @@ const posts = page.data;
    </head>
    <body class='flex flex-col items-center'>
       <Header />
-      <main class='my-20'>
+      <main class='mt-20'>
          <section>
             <ul>
                {
@@ -213,6 +215,7 @@ const posts = page.data;
                         <div class='tag-lt' />
                         <li>
                            <MyImage
+                              zeroRadius
                               src={
                                  post.data.heroImage ??
                                  '/blog-placeholder-about.jpg'
@@ -235,6 +238,11 @@ const posts = page.data;
                }
             </ul>
          </section>
+         <Pagination
+            currentPage={page.currentPage}
+            pageNum={page.lastPage}
+            basePath='/blog'
+         />
       </main>
       <Footer />
    </body>

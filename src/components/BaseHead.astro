@@ -2,6 +2,7 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import { SITE_TITLE } from '../consts';
+import { ViewTransitions } from 'astro:transitions';
 import '../styles/global.css';
 
 interface Props {
@@ -60,3 +61,5 @@ const {
    src='https://kit.fontawesome.com/3250f093be.js'
    is:inline
    crossorigin='anonymous'></script>
+
+<ViewTransitions />

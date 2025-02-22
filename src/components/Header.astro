@@ -45,6 +45,7 @@ const { fixed = true, boxShadow = true } = Astro.props;
       <a href='/' class='hidden md:block text-white'>.is()</a>
       <a href='/about' class='block text-white'>.about()</a>
       <a href='/blog' class='block text-white'>.blog()</a>
+      <a href='/rss.xml' class='block text-white'>.rss()</a>
       <!-- <a href='/contact' class='hidden md:block text-white'>.contact()</a> -->
    </div>
    <div class='mobile-menu'>
@@ -71,10 +72,11 @@ const { fixed = true, boxShadow = true } = Astro.props;
       <div class='overflow-auto w-full hide-scrollbar'>
          <div
             id='second-menu'
-            class='flex gap-[0.55rem] [&>a]:py-1 [&>a]:px-1.5 [&>a]:rounded-lg [&>a]:bg-[rgb(255,123,0)] -translate-x-full opacity-0 transition-all duration-700'>
-            <a href='/' class='block text-white'>.is()</a>
-            <a href='/about' class='block text-white'>.about()</a>
-            <a href='/blog' class='block text-white'>.blog()</a>
+            class='flex gap-[0.55rem] [&>a]:py-1 [&>a]:px-1.5 [&>a]:rounded-md [&>a]:transition-colors [&>a]:bg-[rgb(255,123,0)] hover:[&>a]:text-white -translate-x-full opacity-0 transition-all duration-700'>
+            <a href='/' class='block text-[#181818]'>.is()</a>
+            <a href='/about' class='block text-[#181818]'>.about()</a>
+            <a href='/blog' class='block text-[#181818]'>.blog()</a>
+            <a href='/rss.xml' class='block text-[#181818]'>.rss()</a>
          </div>
       </div>
    </div>
