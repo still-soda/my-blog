@@ -234,7 +234,7 @@ Fetch API 是 ES6 中新增的一个特性，它是一种基于 `Promise` 的数
 `AbortController` 可以用于取消请求，只需要实例化一个 `AbortController` 对象，让后将对象的 `signal` 属性传入 `fetch` 的第二参数即可。
 
 ```js
-const { signal } = new AbortController();
+const { signal, abort } = new AbortController();
 
 // 监听中断事件
 signal.addEventListener('abort', () => console.log('Abort!'));
@@ -243,8 +243,8 @@ fetch('...', { signal });
 
 console.log(signal.aborted); // => false
 
-// 调用 .abort() 中断请求
-signal.abort();
+// 调用 abort() 中断请求
+abort();
 
 console.log(signal.aborted); // => true
 ```
