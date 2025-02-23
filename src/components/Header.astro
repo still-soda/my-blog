@@ -25,12 +25,22 @@ const { fixed = true, boxShadow = true } = Astro.props;
       document.querySelector('#switch')?.classList.toggle('-rotate-90');
    };
 
-   (document.querySelector('#switch') as HTMLElement).onclick = expand;
-   (document.querySelector('#second-menu') as HTMLElement).childNodes.forEach(
-      (node) => {
+   function init() {
+      (document.querySelector('#switch') as HTMLElement).onclick = expand;
+      (
+         document.querySelector('#second-menu') as HTMLElement
+      ).childNodes.forEach((node) => {
          node.addEventListener('click', expand);
-      }
-   );
+      });
+   }
+
+   try {
+      init();
+   } catch (error) {
+      console.log('X initialize header');
+   }
+
+   document.addEventListener('astro:page-load', init);
 </script>
 
 <nav

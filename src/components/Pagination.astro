@@ -75,7 +75,7 @@ const { currentPage, pageNum, basePath } = Astro.props;
 </style>
 
 <script>
-   document.addEventListener('astro:page-load', () => {
+   function init() {
       const container = document.querySelector(
          '.pagination__container'
       ) as HTMLDivElement;
@@ -92,7 +92,15 @@ const { currentPage, pageNum, basePath } = Astro.props;
          .querySelector('.prev')
          ?.addEventListener('click', () => goto(-1));
       document.querySelector('.next')?.addEventListener('click', () => goto(1));
-   });
+   }
+
+   try {
+      init();
+   } catch (error) {
+      console.log('X initialize pagination');
+   }
+
+   document.addEventListener('astro:page-load', init);
 </script>
 
 <div

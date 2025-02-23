@@ -118,6 +118,18 @@ export default function Scanner({ front, back }) {
          stateStartTime = Date.now();
          frontScreen.current.classList.toggle('active');
       }
+
+      return () => {
+         window.removeEventListener('mousemove', handleMouseMove);
+         window.removeEventListener('touchmove', handleTouchMove);
+         window.removeEventListener('mousedown', handleMouseDown);
+         window.removeEventListener('mouseup', handleMouseUp);
+         window.removeEventListener('mouseleave', handleMouseLeave);
+         window.removeEventListener('touchstart', handleTouchStart);
+         window.removeEventListener('touchend', handleTouchEnd);
+         moveUpdateFlag = false;
+         scaleUpdateFlag = false;
+      };
    }, []);
 
    return (

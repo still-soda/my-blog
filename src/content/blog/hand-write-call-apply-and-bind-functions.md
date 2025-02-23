@@ -1,7 +1,7 @@
 ---
 title: '手写 call、apply 和 bind 函数'
 description:
-   '手写 JS 经典函数 call、apply 和 bind，以此巩固我的基础能力'
+   '手写 JS 经典函数 call、apply 和 bind，以此巩固我的基础能力。'
 pubDate: 'Feb 22 2025'
 heroImage: '/src/images/hero/hero-hand-write-call-apply-and-bind-functions.png'
 ---
