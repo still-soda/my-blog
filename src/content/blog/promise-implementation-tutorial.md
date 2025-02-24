@@ -23,13 +23,13 @@ heroImage: '/src/images/hero/hero-promise-implementation-tutorial.png'
 
 并且后面两个状态都属于落定（Settled），唯独 Pending 属于未落定（Unsettled）。
 
-**Promise 只能又未落定转化为落定。**
+**Promise 只能由未落定状态转化为落定状态。**
 
 ## 实现Promise的实例方法
 
-我们就正式开始实现 Promise，我将一步步带你实现并了解其中的细节。
+正式开始 Promise 类的实现，我将一步步带你实现并了解其中的细节。
 
-让我们先创建一个 Promise 的实现，就叫 `PromiseImpl` 吧。
+让我们先创建一个 Promise 的实现，类名就叫 PromiseImpl 吧。
 
 ```js
 class PromiseImpl {
@@ -109,7 +109,7 @@ class PromiseImpl {
 
 ```
 
-> 这里的 `#onFulfilled` 和 `#onRejected` 可以理解为 **调度器**。调度器允许我们对传入的值做进一步的操作，并将其向后传递。
+> `then` 方法的 `onFulfilled` 和 `onRejected` 两个参数可以理解为 **调度器**。调度器允许我们对传入的值做进一步的操作，并将其向后传递。
 >
 > 只不过此处 `#onRejected` 的行为并没有那么简单，我们会在后文做进一步讲解。
 
@@ -127,7 +127,7 @@ new PromseImpl(/* ... */)
 
 我们知道，原生 Promise 构造函数中的执行器是一个同步回调，而 `Promise.then()` 方法中的回调则是异步回调，这部分异步回调被放在 **微任务** 中执行。
 
-我们可以在上一个 Promise 落定时去准备好落定下一个 Promise（放入微任务中）。
+我们可以在当前 Promise 落定时将结果传递给下一个 Promise（放入微任务中执行）。
 
 ```js
 class PromiseImpl {
@@ -139,8 +139,8 @@ class PromiseImpl {
    #resolve(value) {
       queueMicrotask(() => {
          let result;
-         // 尝试通过调度器转化 value，发生错误则走拒绝流程
          try {
+            // 尝试通过调度器转化 value
             result = this.#onFulfilled ? this.#onFulfilled(value) : value;
          } catch (err) {
             // 如果调度器出现错误则直接落定为拒绝，并将错误向后传递
@@ -179,15 +179,15 @@ class PromiseImpl {
 }
 ```
 
-像这样，在落定的时候向微任务队列推入新的任务去落定下一个 Promise 的值，我们就可以实现落定值的链式传递了。
+像这样，在落定的时候向微任务队列推入新的任务，在这个任务中落定下一个 Promise 的值，这样我们就可以实现落定值的链式传递了。
 
-但是有一个潜在的问题我们没有考虑到：如果落定的值是一个对象，那该怎么办？
+但是有一个潜在的问题我们没有考虑到：如果落定的值是一个 PromiseImpl 对象，那该怎么办？
 
 #### 等待 PromiseImpl 类型的落定值
 
 通过观察原生 Promise 的行为，我们可以得知如果返回的是一个 Promise 对象，那么会将 **该 Promise 落定的值** 传递下去，而不是直接传递 Promise 对象。
 
-让我们先将调度结束后的操作抽取成 `process` 方法：
+让我们先将调度结束后的操作提取封装为 `process` 方法：
 
 ```js
 class PromiseImpl {
@@ -240,9 +240,9 @@ class PromiseImpl {
 }
 ```
 
-随后我们需要实现一个名为 `#processPromiseResult` 的方法，它会在传入的 Promise 兑现的时候调用 process 方法。
+随后我们需要实现一个名为 `#processPromiseResult` 的方法，它会在传入的 PromiseImpl 对象兑现的时候调用 `process` 方法，在对象拒绝时调用 `this.#reject()`。
 
-然后，我们在刚刚封装的 `process` 方法中判断当前传入的值是否是一个 PromiseImpl 对象，如果是的话，调用 `#processPromiseResult` 解析传入值，并停止处理。
+然后，我们在刚刚封装的 `process` 方法中判断当前传入的值是否是一个 PromiseImpl 对象，如果是的话，调用 `#processPromiseResult` 递归地解析传入值，并停止继续处理。
 
 ```js
 class PromiseImpl {
@@ -398,7 +398,7 @@ class PromiseImpl {
 
 #### 处理落定状态下的then
 
-目前我们 `then` 方法的实现并未考虑落定状态下的情况，在已经落定的时候，`then` 将会被立即落定为 `#settleValue` 的值。
+目前我们 `then` 方法的实现并未考虑落定状态下的情况，在已经落定的时候，`then` 返回的 PromiseImpl 对象应当 **立即被落定** 为 `#settleValue` 的值。
 
 ```js
 class PromiseImpl {
@@ -407,6 +407,7 @@ class PromiseImpl {
   then(onFulfilled, onRejected) {
     this.#onFulfilled = onFulfilled;
     this.#onRejected = onRejected;
+
     // 分三种情况进行处理
     if (this.#status === PromiseImpl.PENDING) {
       return new PromiseImpl((resolve, reject) => {
@@ -415,10 +416,10 @@ class PromiseImpl {
       });
     } else if (this.#status === PromiseImpl.FULFILLED) {
       this.#onFulfilled?.(this.#settledValue);
-      return PromiseImpl.resolve(this.#settledValue); // 此处暂没有实现 PromiseImpl.resolve() 方法
+      return PromiseImpl.resolve(this.#settledValue); // PromiseImpl.resolve() 方法将在后文实现
     } else {
       this.#onRejected?.(this.#settledValue);
-      return PromiseImpl.reject(this.#settledValue); // 此处暂没有实现 PromiseImpl.reject()
+      return PromiseImpl.reject(this.#settledValue); // PromiseImpl.reject() 方法将在后文实现
     }
   }
 
@@ -432,11 +433,11 @@ class PromiseImpl {
 
 当我们使用 `await` 等待一个 Promise 时，如果这个 Promise 发生了错误，那么此处会抛出一个异常。
 
-你以为这部分需要我们自己来实现吗？非也非也。
+你可能以为这部分需要我们自己来实现，实则不然。
 
-经过我的观察，我发现当使用 `await` 去等待一个 Promise 的时候，它会自动在 Promise 末尾插上一个 `then`方法，据我的猜测，`await` 语法糖正是通过这个 `then()` 去获取 Promise 最终的返回值的，而如果这个 `then` 方法的 `onRejected` 调度器被调用，那么 `await` 语法糖会通过调度器传入的 `reason` 参数去实例化一个 Error 对象并抛出。
+经过观察，我发现当使用 `await` 去等待一个 PromiseImpl 对象的时候，它会自动对该对象调用一次 **额外** 的 `then` 方法。结合先前手动实现 `await` 的经历，我认为 `await` 是通过这个额外的 `then` 去获取 PromiseImpl 对象最终的返回值的，而如果这个 `then` 方法的 `onRejected` 调度器被调用，那么 `await` 会通过调度器传入的 `reason` 参数去实例化一个 Error 对象并抛出。
 
-`await` 做的操作类似于以下代码：
+`await` 的行为可以简单表示为以下代码：
 
 ```js
 const a = await promise;
@@ -449,13 +450,15 @@ promise.then(
 );
 ```
 
-但是如果链上抛出的异常被 `onRejected` 调度器处理了，就不会触发异常，因此我们可以得出一个结论：被 `onRejected` 调度器处理过的错误将会变为一个兑现的值并向下传递，而没有调度器处理的则会被做为错误继续向下传递。
+如果链上抛出的异常被 `onRejected` 调度器处理了，就不会触发异常，这说明**被 `onRejected` 调度器处理后的异常不会作为异常继续传递**。
+
+由此我们可以得出一个结论：被 `onRejected` 调度器处理过的错误将会被转化为一个兑现的值并向下传递，而没有调度器处理错误的则会作为异常继续向下传递。
 
 如图所示。
 
 <img title="调度器处理示意图" src="/images/promise-implementation-tutorial/image.png" width="300" />
 
-要想实现经 `onRejected` 调度器后转化为兑现状态，我们需要修改 `#reject` 回调中 `process` 方法的实现。
+要想实现经 `onRejected` 调度器后转化为普通值继续向下传递，我们需要修改 `#reject` 回调中 `process` 方法的实现，使其在有 `onRejected` 调度器的时候停止继续传递异常。
 
 ```js
 class PromiseImpl {
@@ -478,7 +481,7 @@ class PromiseImpl {
           return;
         }
 
-        // 当存在 #onRejected 的时候要像 fulfuill 一样处理
+        // 当存在 #onRejected 时要像 fulfuill 值一样处理
         if (this.#onRejected) {
           this.#passResolve(reason);
           return;
@@ -496,11 +499,11 @@ class PromiseImpl {
 }
 ```
 
-这样一来，如果异常被捕获并处理，外界就不会抛出错误。
+这样一来，如果异常被调度器捕获，就不会作为异常继续传递，最后就不会导致外界抛出错误。
 
-#### catch异常处理
+#### 实现catch
 
-通过前文的讨论，我们不难总结出 `PromiseImpl.catch()` 其实就是一个对 `onReject` 调度器的封装方法。
+通过前文的讨论，我们不难总结出 `PromiseImpl.catch()` 其实就是一个对 `then` 的封装方法，它直接调用 `then` 方法并传入异常处理函数。
 
 ```js
 class PromiseImpl {
@@ -519,11 +522,11 @@ class PromiseImpl {
 }
 ```
 
-正因为 `PromiseImpl.catch()` 向传入了 `PromiseImpl.then()` 方法传入了 `onReject` 调度器，所以如果当调用链上有 `.catch()` 方法的时候，错误会被传递给它处理。并且如上文展示的那样，`.catch()` 方法返回的将是一个被兑现的 PromiseImpl 对象（因为错误被 onReject 调度器处理过了）。
+正因为 `PromiseImpl.catch()` 向 `PromiseImpl.then()` 方法传入了 `onReject` 调度器，当调用链上有 `.catch()` 方法的时候，错误会被传递给它处理。并且如上文展示的那样，`.catch()` 方法返回的将是一个 **兑现** 的 PromiseImpl 对象（因为错误已经被 `onRejected` 调度器处理过了）。
 
 #### 实现finally
 
-`finally` 的实现原理也比较简单，它也可以看做是对 `.then()` 方法的封装：
+`finally` 的实现原理也比较简单，它也可以看做是对 `then` 方法的封装，将回调作为 `onFulfilled` 和 `onRejected` 调度器传入 `then` 方法。
 
 ```js
 class PromiseImpl {
@@ -543,9 +546,9 @@ class PromiseImpl {
 }
 ```
 
-这样显然有问题，我相信你可能多少也察觉到了一点：如果是错误经过了 `finally` 的 `onReject` 调度器，就会被做为兑现值而不是异常向下传递，这样就干扰了后续的异常处理。
+我相信你多少也察觉到了一点，这样实现显然有问题：如果异常经过了 `finally` 的 `onReject` 调度器，就会被做为兑现值而不是异常值向下传递，这样就干扰了后续的异常处理。
 
-要解决这个问题，我们需要对 `finally` 中的调度器 `cb` 打上其 “专属标签”。
+要解决这个问题，我们首先要对 `finally` 中的回调 `cb` 打上其 “专属标签”，以供 `#reject` 方法识别和处理。
 
 ```js
 // 用 Symbol 值防止与其他属性名发生冲突
