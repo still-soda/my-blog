@@ -783,3 +783,248 @@ class PromiseImpl {
    }
 }
 ```
+
+以上就是所有 Promise 静态方法的实现，只不过此处没有实现一些比较新的 Promise 方法，我决定留到日后专门写文记录。
+
+## 完整代码
+
+```js
+const __FINAL__ = Symbol();
+
+class PromiseImpl {
+   static PENDING = 0;
+   static FULFILLED = 1;
+   static REJECTED = 2;
+
+   #status = PromiseImpl.PENDING;
+   #settledValue = undefined;
+   #onFulfilled;
+   #onRejected;
+   #thenResolve;
+   #thenReject;
+
+   constructor(executor) {
+      try {
+         executor(this.#resolve.bind(this), this.#reject.bind(this));
+      } catch (err) {
+         this.#reject(err);
+      }
+   }
+
+   /// 私有方法
+
+   #processPromiseResult(promise, callback) {
+      promise.then(
+         (result) => callback(result),
+         (reason) => this.#rejectNext(reason)
+      );
+   }
+
+   #resolve(value) {
+      queueMicrotask(() => {
+         let result;
+         try {
+            result = this.#onFulfilled ? this.#onFulfilled(value) : value;
+         } catch (err) {
+            this.#rejectNext(err);
+            return;
+         }
+
+         const process = (result) => {
+            if (result instanceof PromiseImpl) {
+               this.#processPromiseResult(result, process);
+               return;
+            }
+
+            this.#resolveNext(result);
+         };
+
+         process(result);
+      });
+   }
+
+   #reject(reason) {
+      queueMicrotask(() => {
+         if (this.#onRejected) {
+            try {
+               reason = this.#onRejected(reason);
+            } catch (err) {
+               reason = err;
+            }
+         }
+
+         const process = (reason) => {
+            if (reason instanceof PromiseImpl) {
+               this.#processPromiseResult(reason, process);
+               return;
+            }
+
+            if (this.#onRejected && !this.#onRejected[__FINAL__]) {
+               this.#resolveNext(reason);
+            } else {
+               this.#rejectNext(reason);
+            }
+         };
+
+         process(reason);
+      });
+   }
+
+   #rejectNext(reason) {
+      this.#status = PromiseImpl.REJECTED;
+      this.#settledValue = reason;
+      this.#thenReject?.(reason);
+   }
+
+   #resolveNext(value) {
+      this.#status = PromiseImpl.FULFILLED;
+      this.#settledValue = value;
+      this.#thenResolve?.(value);
+   }
+
+   /// 成员方法
+
+   then(onFulfilled, onRejected) {
+      this.#onFulfilled = onFulfilled;
+      this.#onRejected = onRejected;
+
+      if (this.#status === PromiseImpl.PENDING) {
+         return new PromiseImpl((resolve, reject) => {
+            this.#thenResolve = resolve;
+            this.#thenReject = reject;
+         });
+      } else if (this.#status === PromiseImpl.FULFILLED) {
+         this.#onFulfilled?.(this.#settledValue);
+         return PromiseImpl.resolve(this.#settledValue);
+      } else {
+         this.#onRejected?.(this.#settledValue);
+         return PromiseImpl.reject(this.#settledValue);
+      }
+   }
+
+   catch(callback) {
+      return this.then(null, (reason) => {
+         const err = new Error(reason);
+         callback(err);
+      });
+   }
+
+   finally(callback) {
+      const cb = (val) => {
+         callback();
+         return val;
+      };
+      cb[__FINAL__] = true;
+      return this.then(cb, cb);
+   }
+
+   /// 静态方法
+
+   static resolve(value) {
+      return new PromiseImpl((res) => res(value));
+   }
+
+   static reject(reason) {
+      return new PromiseImpl((_, rej) => rej(reason));
+   }
+
+   static all(promises) {
+      return new PromiseImpl((resolve, reject) => {
+         let count = promises.length;
+         const results = new Array(count);
+
+         const onSettled = (status, value, idx) => {
+            results[idx] = value;
+
+            if (--count === 0 || status === 'rejected') {
+               status === 'fulfilled' ? resolve(results) : reject(value);
+            }
+         };
+
+         promises.forEach((promise, idx) => {
+            if (!(promise instanceof PromiseImpl)) {
+               onSettled('fulfilled', promise, idx);
+               return;
+            }
+            promise.then(
+               (result) => onSettled('fulfilled', result, idx),
+               (reason) => onSettled('rejected', reason, idx)
+            );
+         });
+      });
+   }
+
+   static allSettled(promises) {
+      return new PromiseImpl((resolve) => {
+         let count = promises.length;
+         const results = new Array(count);
+
+         const onSettled = (status, value, idx) => {
+            const resultKey = status === 'fulfilled' ? 'value' : 'reason';
+            results[idx] = {
+               status,
+               [resultKey]: value,
+            };
+            --count === 0 && resolve(results);
+         };
+
+         promises.forEach((promise, idx) => {
+            if (!(promise instanceof PromiseImpl)) {
+               onSettled('fulfilled', promise, idx);
+               return;
+            }
+            promise.then(
+               (result) => onSettled('fulfilled', result, idx),
+               (reason) => onSettled('rejected', reason, idx)
+            );
+         });
+      });
+   }
+
+   static race(promises) {
+      return new PromiseImpl((resolve, reject) => {
+         const onSettled = (status, value) => {
+            status === 'fulfilled' ? resolve(value) : reject(value);
+         };
+
+         promises.forEach((promise, idx) => {
+            if (!(promise instanceof PromiseImpl)) {
+               onSettled('fulfilled', promise, idx);
+               return;
+            }
+            promise.then(
+               (result) => onSettled('fulfilled', result, idx),
+               (reason) => onSettled('rejected', reason, idx)
+            );
+         });
+      });
+   }
+
+   static any(promises) {
+      return new PromiseImpl((resolve, reject) => {
+         let count = promises.length;
+         const reasons = new Array(count);
+
+         const onSettled = (status, value, idx) => {
+            if (status === 'fulfilled') {
+               resolve(value);
+            } else {
+               reasons[idx] = value;
+               --count === 0 && reject(reasons);
+            }
+         };
+
+         promises.forEach((promise, idx) => {
+            if (!(promise instanceof PromiseImpl)) {
+               onSettled('fulfilled', promise, idx);
+               return;
+            }
+            promise.then(
+               (result) => onSettled('fulfilled', result, idx),
+               (reason) => onSettled('rejected', reason, idx)
+            );
+         });
+      });
+   }
+}
+```
