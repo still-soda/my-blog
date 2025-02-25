@@ -27,7 +27,7 @@ heroImage: '/src/images/hero/hero-promise-implementation-tutorial.png'
 
 ## 实现Promise的实例方法
 
-正式开始 Promise 类的实现，我将一步步带你实现并了解其中的细节。
+正式开始 Promise 类的实现，我将一步步带你完善并了解其中的细节。
 
 让我们先创建一个 Promise 的实现，类名就叫 PromiseImpl 吧。
 
@@ -109,7 +109,7 @@ class PromiseImpl {
 
 ```
 
-> `then` 方法的 `onFulfilled` 和 `onRejected` 两个参数可以理解为 **调度器**。调度器允许我们对传入的值做进一步的操作，并将其向后传递。
+> 我们可以简单地将 `then` 方法的 `onFulfilled` 和 `onRejected` 两个参数可以看做 **调度器**。这个调度器允许我们对传入的值做进一步的操作，并将其向后传递。
 >
 > 只不过此处 `#onRejected` 的行为并没有那么简单，我们会在后文做进一步讲解。
 
