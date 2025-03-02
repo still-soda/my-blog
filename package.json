@@ -3,8 +3,7 @@
    "type": "module",
    "version": "0.0.1",
    "scripts": {
-      "attach": "bun ./src/cli/attach-hero.js",
-      "attach:random": "bun ./src/cli/attach-hero.js --random",
+      "attach": "bun ./src/cli/attach-hero.js ",
       "dev": "astro dev --open",
       "build": "astro build",
       "preview": "astro preview",
