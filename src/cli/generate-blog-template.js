@@ -57,10 +57,10 @@ await enquirer.prompt(questions).then((answers) => {
    const blogPath = path.resolve(__dirname, '../content/blog');
    const content =
       '---\n' +
-      `title: "${title}"\n` +
-      `pubDate: "${date}"\n` +
-      `description: "${description}"\n` +
-      'heroImage: "/images/hero-image.jpg"\n' +
+      `title: '${title}'\n` +
+      `pubDate: '${date}'\n` +
+      `description: '${description}'\n` +
+      `heroImage: '/images/hero-image.jpg'\n` +
       '---\n';
    fs.writeFileSync(`${blogPath}/${filename}.md`, content, { flag: 'w' });
    console.log(`🎉文件已生成！ path: /src/content/blog/${filename}.md`);
