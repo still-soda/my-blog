@@ -4,6 +4,7 @@
    "version": "0.0.1",
    "scripts": {
       "attach": "bun ./src/cli/attach-hero.js ",
+      "gen": "bun ./src/cli/generate-blog-template.js ",
       "dev": "astro dev --open",
       "build": "astro build",
       "preview": "astro preview",
@@ -25,5 +26,8 @@
       "remark-math": "^6.0.0",
       "sharp": "^0.33.5",
       "tailwindcss": "^3.4.17"
+   },
+   "devDependencies": {
+      "enquirer": "^2.4.1"
    }
 }
