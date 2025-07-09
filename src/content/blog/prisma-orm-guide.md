@@ -87,6 +87,7 @@ model User {
 	profile Profile?  
 }
 ```
+
 其中 `model` 关键字用于定义数据表，数据表的三列分别是：字段名、字段类型、字段属性。
 
 常用的字段属性有：
@@ -132,7 +133,7 @@ npm install @prisma/client
 npx prisma generate
 ```
 
-需要注意的是，当你每次运行 `prisma generate` 的时候，实际上是 Prisma 在根据**当前**的 Prisma 模式文件定制 TypeScript 代码，即 Prisma Client。所以当你修改了你的 Prisma 模式文件，你必须重新运行 `prisma generate` 来更新 Prisma Client。如果你修改的模式文件影响到了数据库，那么你必须重新运行 `prisma migerate` 来将 Prisma 模式文件应用到数据库模式。
+需要注意的是，当你每次运行 `prisma generate` 的时候，实际上是 Prisma 在根据**当前**的 Prisma 模式文件定制 TypeScript 代码，即 Prisma Client。所以当你修改了你的 Prisma 模式文件，你必须重新运行 `prisma generate` 来更新 Prisma Client。如果你修改的模式文件影响到了数据库，那么你必须重新运行 `prisma migrate` 来将 Prisma 模式文件应用到数据库模式。
 
 ![Prisma 工作原理图示](/images/prisma-orm-guide/1.png)
 
@@ -149,7 +150,7 @@ npx prisma generate
 }
 ```
 
-然后就可以通过简单运行 `npm run migerate` 和 `npm run generate` 来重新运行命令。
+然后就可以通过简单运行 `npm run migrate` 和 `npm run generate` 来重新运行命令。
 
 ### 在 TypeScript 中查询数据库
 
